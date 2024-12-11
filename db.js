@@ -1,12 +1,5 @@
-const sqlite = require('sqlite3').verbose();
-const db = new sqlite.Database('database.db', sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-      console.error('Error opening database:', err);
-    } else {
-      console.log('Connected Successfully to database.');
-    }
-  });
-
+const sqlite = require('sqlite3');
+const db = new sqlite.Database('database.db')
 
 
 const createUsersTable =`CREATE TABLE IF NOT EXISTS USERS ( 
