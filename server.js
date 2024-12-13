@@ -191,7 +191,6 @@ server.post('/businessowner/register', (req, res) => {
 server.post('/businessowner/login', (req, res) => {
     const BUSINESS_USERNAME = req.body.BUSINESS_USERNAME;
     const PASSWORD = req.body.PASSWORD;
-    console.log(req.body);
     db.get(`SELECT * FROM BUSINESS_OWNERS WHERE BUSINESS_USERNAME = ?`, [BUSINESS_USERNAME], (err, owner) => {
         if (err) return res.status(500).send('Error accessing database');
         if (!owner) return res.status(401).send('Business owner not found')
@@ -213,29 +212,39 @@ server.post('/businessowner/login', (req, res) => {
 });
 
 // Admin: Manage users and business owners
-server.get(`/users`, verifyToken, (req, res) => {
-    console.log('before check role');
-    const ROLE = req.user.ROLE;
+/*server.get(`/admin/dashboard`, verifyToken, (req, res) => {
+    console.log('req.user:', req.user); 
+    const ROLE = req.user?.ROLE;  
     console.log('before check admin role');
-    console.log(' role=' + req.user.ROLE);
-    if (ROLE !== 1)
+    console.log('role=' + ROLE);
+    if (ROLE !== 'admin'){
         return res.status(403).send("you are not an admin")
-    const query = `SELECT * FROM USERS`
-    db.all(query, (err, rows) => {
+    }    
+    const queryUsers = `SELECT * FROM USERS`
+    const queryBusinessOwners = 'SELECT * FROM BUSINESSOWNERS';
+    db.query(queryBusinessOwners, (err, businessOwnerResults) => {
         if (err) {
-            console.log(err)
-            return res.send(err)
+          return res.status(500).json({ message: 'Database error fetching business owners' +err });
         }
-        else {
-            return res.json(rows)
+  
+    db.query(queryUsers, (err, userResults) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error fetching users' +err });
         }
-    })
-})
-server.get('/admin/users', verifyToken, (req, res) => {
+        const allUsersAndOwners = {
+            businessOwners: businessOwnerResults,
+            users: userResults
+          };
+          res.json(allUsersAndOwners);
+        });
+      });
+    });
+    
+
+/*server.get('/admin/users', verifyToken, (req, res) => {
     console.log('before check role');
     console.log('before check business role');
-    console.log(' role=' + req.user.authorizeRole);
-    if (authorizeRole !== 'admin') return res.status(403).send('Access denied');
+    if (ROLE !== 'admin') return res.status(403).send('Access denied');
     db.all(`SELECT * FROM USERS`, (err, users) => {
             if (err) {
                 console.error('Error retrieving users', err);
@@ -258,7 +267,7 @@ server.get('/admin/business',  verifyToken,(req, res) => {
         return res.status(200).json(owners);
     }
 );
-});
+});*/
 // Business owner: Manage products
 server.post('/business/products', verifyToken, (req, res) => {
     const ROLE = req.body.ROLE;
@@ -281,7 +290,7 @@ server.post('/business/products', verifyToken, (req, res) => {
     console.log('before insert business STOCK' + STOCK);
     console.log('before insert business GENDER' + GENDER);
     console.log('before insert business BUSINESS_ID' + BUSINESS_ID);
-    console.log('before insert business role');
+    console.log('before insert PRODUCTS');
     db.run(`INSERT INTO PRODUCTS (PRODUCT_NAME, DESCRIPTION, PRICE, SIZE, STOCK, GENDER, BUSINESS_ID) VALUES (? ,? , ?, ?, ?, ?,?)`, 
         [PRODUCT_NAME, DESCRIPTION, PRICE,SIZE,STOCK,GENDER,BUSINESS_ID], (err) => {
             if (err) return res.status(401).send('Error adding product');
@@ -291,7 +300,8 @@ server.post('/business/products', verifyToken, (req, res) => {
 });
 // Customer: Add to Cart
 server.post('/cart', verifyToken, (req, res) => {
-    if (req.user.role !== 'CUSTOMER') return res.status(403).send('Access denied.');
+    const ROLE = req.body.role
+    if (req.body.role !== 'CUSTOMER') return res.status(403).send('Access denied.');
     const CART_ID =req.body.CART_ID
     const USER_ID =req.body.USER_ID
     const PRODUCT_ID =req.body.PRODUCT_ID
