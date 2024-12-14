@@ -1,0 +1,80 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Georgia', serif;
+  }
+  
+  .register-container {
+    background-image: url('../styles/register.png');
+    background-size: cover; 
+    background-position: center;
+    background-color: #f8f1e5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+  }
+ 
+  
+  .register-box {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 8px 16px rgba(255, 4, 4, 0.2);
+    max-width: 450px;
+    width: 100%;
+  }
+  
+  .register-title {
+    font-size: 2.2rem;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #4B2C20;
+  }
+  
+  .role-selection {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .role-box {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: 1rem;
+  }
+  
+  .register-form {
+    margin-top: 20px;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+  
+  .register-button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .error-message {
+    color: red;
+  }
+  
+  .success-message {
+    color: green;
+  }
+  
