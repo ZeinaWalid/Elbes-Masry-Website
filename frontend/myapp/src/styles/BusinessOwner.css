@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 body {
     background-color: #F8F1E5;
     color: #4B2C20;
@@ -10,27 +11,62 @@ body {
   
   .navbar {
     width: 100%;
+=======
+/* General styling */
+body {
+    font-family: 'Georgia', serif;
+    background-color: #F8F1E5;
+    margin: 0;
+    padding: 0;
+    color: #4B2C20;
+  }
+  
+  .business-owner-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Navbar styling */
+  .navbar {
+    background-color: #FFCF9D;
+>>>>>>> Stashed changes
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
+<<<<<<< Updated upstream
     background-color: #FFCF9D;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   .logo {
+=======
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar .logo {
+>>>>>>> Stashed changes
     font-size: 1.8rem;
     font-weight: bold;
     color: #4B2C20;
   }
   
+<<<<<<< Updated upstream
   .nav-links {
+=======
+  .navbar .nav-links {
+>>>>>>> Stashed changes
     list-style: none;
     display: flex;
     gap: 20px;
   }
   
+<<<<<<< Updated upstream
   .nav-links li a {
+=======
+  .navbar .nav-links li a {
+>>>>>>> Stashed changes
     text-decoration: none;
     font-size: 1rem;
     color: #4B2C20;
@@ -39,6 +75,7 @@ body {
     transition: background-color 0.3s ease;
   }
   
+<<<<<<< Updated upstream
   .nav-links li a:hover {
     background-color: #FFF8ED;
   }
@@ -77,5 +114,146 @@ body {
     color: red;
     font-weight: bold;
     margin-top: 20px;
+=======
+  .navbar .nav-links li a:hover {
+    background-color: #FFF8ED;
+  }
+  
+  /* Dashboard main layout */
+  .dashboard {
+    padding: 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .dashboard section {
+    background-color: #FFF8ED;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dashboard h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #4B2C20;
+  }
+  
+  /* Add Product Form Styling */
+  .add-product form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .add-product input,
+  .add-product textarea,
+  .add-product select {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    background-color: #FFF8ED;
+    color: #4B2C20;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-product input:focus,
+  .add-product textarea:focus,
+  .add-product select:focus {
+    border-color: #4B2C20;
+    outline: none;
+  }
+  
+  .add-product button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #FFF;
+    background-color: #4B2C20;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-product button:hover {
+    background-color: #3B2C20;
+  }
+  
+  /* Products List */
+  .products ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .products li {
+    background-color: #FFF;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .products li h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .products li p {
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  /* Orders List */
+  .orders ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .orders li {
+    background-color: #FFF;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .orders li h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .orders li p {
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  /* Success and Error Messages */
+  .success-message,
+  .error-message {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+  }
+  
+  .success-message {
+    background-color: #DFF2BF;
+    color: #4F8A10;
+  }
+  
+  .error-message {
+    background-color: #FFBABA;
+    color: #D8000C;
+>>>>>>> Stashed changes
   }
   
