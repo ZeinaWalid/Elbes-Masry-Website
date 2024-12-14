@@ -1,17 +1,3 @@
-<<<<<<< Updated upstream
-body {
-    background-color: #F8F1E5;
-    color: #4B2C20;
-    font-family: 'Georgia', serif;
-  }
-  
-  .business-owner-container {
-    width: 100%;
-  }
-  
-  .navbar {
-    width: 100%;
-=======
 /* General styling */
 body {
     font-family: 'Georgia', serif;
@@ -30,43 +16,26 @@ body {
   /* Navbar styling */
   .navbar {
     background-color: #FFCF9D;
->>>>>>> Stashed changes
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
-<<<<<<< Updated upstream
-    background-color: #FFCF9D;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .logo {
-=======
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   .navbar .logo {
->>>>>>> Stashed changes
     font-size: 1.8rem;
     font-weight: bold;
     color: #4B2C20;
   }
   
-<<<<<<< Updated upstream
-  .nav-links {
-=======
   .navbar .nav-links {
->>>>>>> Stashed changes
     list-style: none;
     display: flex;
     gap: 20px;
   }
   
-<<<<<<< Updated upstream
-  .nav-links li a {
-=======
   .navbar .nav-links li a {
->>>>>>> Stashed changes
     text-decoration: none;
     font-size: 1rem;
     color: #4B2C20;
@@ -75,46 +44,6 @@ body {
     transition: background-color 0.3s ease;
   }
   
-<<<<<<< Updated upstream
-  .nav-links li a:hover {
-    background-color: #FFF8ED;
-  }
-  
-  .dashboard {
-    padding: 40px;
-  }
-  
-  .brand-details,
-  .products,
-  .orders {
-    margin-bottom: 30px;
-  }
-  
-  h2 {
-    color: #4B2C20;
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  li {
-    background: #FFF8ED;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .error-message {
-    color: red;
-    font-weight: bold;
-    margin-top: 20px;
-=======
   .navbar .nav-links li a:hover {
     background-color: #FFF8ED;
   }
@@ -254,6 +183,5 @@ body {
   .error-message {
     background-color: #FFBABA;
     color: #D8000C;
->>>>>>> Stashed changes
   }
   

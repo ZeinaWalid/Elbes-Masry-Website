@@ -27,7 +27,7 @@ const generateToken = (id, ROLE,BUSINESS_ID,PRODUCT_ID) => {
 
 // To authenticate users based on token
 const verifyToken = (req, res, next) => {
-    const token = req.cookies.authToken
+    const token = req.cookies.authToken;
     console.log("Token received:", token);
     if (!token)
         return res.status(401).send('Access denied, No token provided')
@@ -98,16 +98,8 @@ db.get(`SELECT * FROM Admins WHERE USERNAME=?  `, [USERNAME], (err, user) => {
 )
 
 server.get('/admin/dashboard', verifyToken, (req, res) => {
-    const queryADMINS = 'SELECT * FROM ADMINS';
-    const ROLE = req.body.role
-    console.log('role = ' + JSON.stringify(ROLE))
-    if (ROLE !== 'admin') {
-        return res.status(403).send('Unauthorized: Access is denied.');
-    }
-
     const queryUsers = 'SELECT * FROM USERS';
     const queryBusinessOwners = 'SELECT * FROM BUSINESS_OWNERS';
-
     db.all(queryUsers, (err, users) => {
         if (err) {
             console.error('Error fetching users:', err);
@@ -221,16 +213,9 @@ server.post('/businessowner/register', (req, res) => {
 server.post('/businessowner/login', (req, res) => {
     const BUSINESS_USERNAME = req.body.BUSINESS_USERNAME;
     const PASSWORD = req.body.PASSWORD;
-    console.log("BUSINESS_USERNAME" + BUSINESS_USERNAME);
     db.get(`SELECT * FROM BUSINESS_OWNERS WHERE BUSINESS_USERNAME = ?`, [BUSINESS_USERNAME], (err, owner) => {
-        if (err) {
-            console.log("err:" + err)
-            return res.status(500).send('Error accessing database');
-        } 
-        if (!owner) {
-            console.log("not")
-            return res.status(401).send('Business owner not found');
-        } 
+        if (err) return res.status(500).send('Error accessing database');
+        if (!owner) return res.status(401).send('Business owner not found')
         bcrypt.compare(PASSWORD, owner.PASSWORD, (err, isMatch) => {
             if (err) return res.status(500).send('Error comparing password');
             if (!isMatch) return res.status(401).send('Invalid credentials');
@@ -282,81 +267,7 @@ server.delete('/businessowner/delete/:id', verifyToken, (req, res) => {
 
 
 // Business owner: Manage products
-server.get('/businessowner/dashboard', verifyToken, (req, res) => {
-    const { ROLE, id: BUSINESS_ID } = req.user; // Get BUSINESS_ID from the token
-  
-    if (ROLE !== 'businessowner') {
-      return res.status(403).json({ message: 'Unauthorized: Access is denied.' });
-    }
-  
-    const queryBrand = 'SELECT * FROM BUSINESS_OWNERS WHERE BUSINESS_ID = ?';
-    const queryProducts = 'SELECT * FROM PRODUCTS WHERE BUSINESS_ID = ?';
-    const queryOrders = `
-          SELECT O.ID AS ORDER_ID, O.QUANTITY, P.PRODUCT_NAME, U.FIRST_NAME, U.LAST_NAME 
-          FROM ORDERS O
-          JOIN PRODUCTS P ON O.PRODUCT_ID = P.PRODUCT_ID
-          JOIN USERS U ON O.USER_ID = U.USER_ID
-          WHERE P.BUSINESS_ID = ?
-      `;
-  
-    db.get(queryBrand, [BUSINESS_ID], (err, brand) => {
-      if (err) {
-        console.error('Error fetching brand:', err);
-        return res.status(500).json({ message: 'Error fetching brand' });
-      }
-  
-      db.all(queryProducts, [BUSINESS_ID], (err, products) => {
-        if (err) {
-          console.error('Error fetching products:', err);
-          return res.status(500).json({ message: 'Error fetching products' });
-        }
-  
-        db.all(queryOrders, [BUSINESS_ID], (err, orders) => {
-          if (err) {
-            console.error('Error fetching orders:', err);
-            return res.status(500).json({ message: 'Error fetching orders' });
-          }
-  
-          return res.status(200).json({
-            brand,
-            products,
-            orders,
-          });
-        });
-      });
-    });
-  });
-
 server.post('/business/products', verifyToken, (req, res) => {
-    const { ROLE, id: BUSINESS_ID } = req.user;
-  
-    if (ROLE !== 'businessowner') return res.status(403).send('Access denied');
-  
-    const { PRODUCT_NAME, DESCRIPTION, PRICE, SIZE, STOCK, GENDER } = req.body;
-  
-    db.run(
-      `INSERT INTO PRODUCTS (PRODUCT_NAME, DESCRIPTION, PRICE, SIZE, STOCK, GENDER, BUSINESS_ID) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [PRODUCT_NAME, DESCRIPTION, PRICE, SIZE, STOCK, GENDER, BUSINESS_ID],
-      function (err) {
-        if (err) {
-          console.error('Error adding product:', err);
-          return res.status(500).send('Error adding product');
-        }
-        return res.status(200).json({
-          PRODUCT_ID: this.lastID, // Return the new product ID
-          PRODUCT_NAME,
-          DESCRIPTION,
-          PRICE,
-          SIZE,
-          STOCK,
-          GENDER,
-          BUSINESS_ID,
-        });
-      }
-    );
-  });
-  
-/*server.post('/business/products', verifyToken, (req, res) => {
     const ROLE = req.body.ROLE;
     console.log('before check business role');
     console.log(' role=' + req.body.ROLE);
@@ -387,13 +298,7 @@ server.post('/business/products', verifyToken, (req, res) => {
             console.log('after insert check business role');
             return res.status(200).send('Product added successfully');
         });
-<<<<<<< Updated upstream
 });
-<<<<<<< Updated upstream
-=======
-=======
-});*/
->>>>>>> Stashed changes
 
 server.get('/products/search', (req, res) => {
     const { BRAND_NAME, GENDER, SIZE, PRICE } = req.query;
@@ -437,29 +342,19 @@ server.get('/products/search', (req, res) => {
 
 // Business Owner Dashboard API
 server.get('/businessowner/dashboard', verifyToken, (req, res) => {
-    console.log('Authorization Header:', req.headers.authorization);
+    console.log('cookie:', req.cookies.authToken);
+    console.log ("request=" + JSON.stringify(req.body));
     const { ROLE, id: BUSINESS_ID } = req.user;
-  
-    if (ROLE !== 'businessowner') {
-      return res.status(403).json({ message: 'Unauthorized: Access is denied.' });
-    }
-  
-    const queryBrand = 'SELECT * FROM BUSINESS_OWNERS WHERE BUSINESS_ID = ?';
-    const queryProducts = 'SELECT * FROM PRODUCTS WHERE BUSINESS_ID = ?';
+    console.log("role=" + ROLE);
+    console.log("before db query");
+    const queryProducts = 'SELECT * FROM PRODUCTS';
     const queryOrders = `
-          SELECT O.ORDER_ID, O.QUANTITY, P.PRODUCT_NAME, U.FIRST_NAME, U.LAST_NAME 
+          SELECT O.ID, O.QUANTITY, P.PRODUCT_NAME, U.FIRST_NAME, U.LAST_NAME 
           FROM ORDERS O
           JOIN PRODUCTS P ON O.PRODUCT_ID = P.PRODUCT_ID
           JOIN USERS U ON O.USER_ID = U.USER_ID
-          WHERE P.BUSINESS_ID = ?
       `;
-  
-    db.get(queryBrand, [BUSINESS_ID], (err, brand) => {
-      if (err) {
-        console.error('Error fetching brand:', err);
-        return res.status(500).json({ message: 'Error fetching brand' });
-      }
-  
+      console.log("businesid=" + BUSINESS_ID)
       db.all(queryProducts, [BUSINESS_ID], (err, products) => {
         if (err) {
           console.error('Error fetching products:', err);
@@ -473,19 +368,13 @@ server.get('/businessowner/dashboard', verifyToken, (req, res) => {
           }
   
           return res.status(200).json({
-            brand,
             products,
             orders,
           });
         });
       });
     });
-  });
 
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 // Customer: Add to Cart
 server.post('/cart', verifyToken, (req, res) => {
     const ROLE = req.body.role
