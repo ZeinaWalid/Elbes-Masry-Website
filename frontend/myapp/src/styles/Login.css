@@ -1,4 +1,3 @@
-/* Global Styles */
 * {
     margin: 0;
     padding: 0;
@@ -8,14 +7,10 @@
   
   body {
     background-color: #F8F1E5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
   }
   
   .login-container {
-    background-image: url('../styles/image.png'); /* Replace with the actual path */
+    background-image: url('../styles/image.png'); 
     background-size: cover;
     background-position: center;
     display: flex;
@@ -35,16 +30,10 @@
     text-align: center;
   }
   
-  h1 {
+  .login-title {
     font-size: 2.5rem;
     color: #4B2C20;
     margin-bottom: 10px;
-  }
-  
-  h2 {
-    font-size: 1.5rem;
-    color: #4B2C20;
-    margin-bottom: 20px;
   }
   
   .role-selection {
@@ -99,6 +88,28 @@
     outline: none;
   }
   
+  .password-wrapper {
+    position: relative;
+  }
+  
+  .toggle-password-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #AA6D34;
+  }
+  
+  .error-message {
+    color: red;
+  }
+  
+  .success-message {
+    color: green;
+  }
+  
   .login-button {
     width: 100%;
     background-color: #4B2C20;
@@ -116,7 +127,21 @@
     background-color: #3B2C20;
   }
   
-  footer {
+  .register-link {
+    margin-top: 20px;
+  }
+  
+  .register-link-text {
+    color: #AA6D34;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .register-link-text:hover {
+    text-decoration: underline;
+  }
+  
+  .footer {
     margin-top: 20px;
     font-size: 0.9rem;
     color: #333;

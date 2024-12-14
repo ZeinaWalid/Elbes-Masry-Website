@@ -36,6 +36,7 @@
   }
   
   .role-selection {
+    color: #4B2C20;
     display: flex;
     justify-content: center;
     gap: 10px;
@@ -63,10 +64,11 @@
   }
   
   .register-button {
+    color: #AA6D34;
     width: 100%;
     padding: 10px;
     border-radius: 8px;
-    border: none;
+    border: 1px solid #4B2C20;
     cursor: pointer;
   }
   
@@ -76,5 +78,34 @@
   
   .success-message {
     color: green;
+  }
+  
+  .login-link {
+    color: #AA6D34;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .login-link:hover {
+    color: #4B2C20;
+  }
+  
+  .password-wrapper {
+    position: relative;
+  }
+  
+  .toggle-password-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #AA6D34;
+  }
+  
+  .toggle-password-icon:hover {
+    color: #4B2C20;
   }
   

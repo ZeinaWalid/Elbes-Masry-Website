@@ -1,0 +1,81 @@
+body {
+    background-color: #F8F1E5;
+    color: #4B2C20;
+    font-family: 'Georgia', serif;
+  }
+  
+  .business-owner-container {
+    width: 100%;
+  }
+  
+  .navbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #FFCF9D;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #4B2C20;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .nav-links li a {
+    text-decoration: none;
+    font-size: 1rem;
+    color: #4B2C20;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-links li a:hover {
+    background-color: #FFF8ED;
+  }
+  
+  .dashboard {
+    padding: 40px;
+  }
+  
+  .brand-details,
+  .products,
+  .orders {
+    margin-bottom: 30px;
+  }
+  
+  h2 {
+    color: #4B2C20;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  li {
+    background: #FFF8ED;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  

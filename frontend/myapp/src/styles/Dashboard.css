@@ -1,0 +1,91 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Georgia', serif;
+  }
+  
+  body {
+    background-color: #F8F1E5;
+  }
+  
+  .dashboard-container {
+    background-image: url('../styles/image.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+  }
+  
+  .dashboard-box {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 900px;
+    text-align: center;
+  }
+  
+  .dashboard-title {
+    font-size: 2.5rem;
+    color: #4B2C20;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-subtitle {
+    font-size: 1.8rem;
+    color: #4B2C20;
+    margin-bottom: 15px;
+  }
+  
+  .dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-table th,
+  .dashboard-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .dashboard-table th {
+    background-color: #FFCF9D;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .dashboard-table td {
+    background-color: #FFF8ED;
+  }
+  
+  .dashboard-button,
+  .edit-button {
+    background-color: #4B2C20;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dashboard-button:hover,
+  .edit-button:hover {
+    background-color: #3B2C20;
+  }
+  
+  .error-message {
+    color: red;
+  }
+  
+  .success-message {
+    color: green;
+  }
+  

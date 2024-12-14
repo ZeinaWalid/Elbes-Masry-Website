@@ -66,7 +66,7 @@ server.post(`/admin/register`, (req, res) => {
         );
     });
 });
-
+ 
 //Admin login
 server.post('/admin/login', (req, res) => {
     const USERNAME = req.body.USERNAME
@@ -87,7 +87,7 @@ db.get(`SELECT * FROM Admins WHERE USERNAME=?  `, [USERNAME], (err, user) => {
                 const token = generateToken(USER_ID, ROLE)
                 res.cookie('authToken', token, {
                     httpOnly: true,
-                    sameSite: 'none',
+                    sameSite: 'lax',
                     secure:false,
                     expiresIn: '24h'
                 });
@@ -96,6 +96,34 @@ db.get(`SELECT * FROM Admins WHERE USERNAME=?  `, [USERNAME], (err, user) => {
         });
 }   )}  
 )
+
+server.get('/admin/dashboard', verifyToken, (req, res) => {
+    const queryADMINS = 'SELECT * FROM ADMINS';
+    const ROLE = req.body.role
+    console.log('role = ' + JSON.stringify(ROLE))
+    if (ROLE !== 'admin') {
+        return res.status(403).send('Unauthorized: Access is denied.');
+    }
+
+    const queryUsers = 'SELECT * FROM USERS';
+    const queryBusinessOwners = 'SELECT * FROM BUSINESS_OWNERS';
+
+    db.all(queryUsers, (err, users) => {
+        if (err) {
+            console.error('Error fetching users:', err);
+            return res.status(500).json({ message: 'Error fetching users' });
+        }
+
+        db.all(queryBusinessOwners, (err, businessOwners) => {
+            if (err) {
+                console.error('Error fetching business owners:', err);
+                return res.status(500).json({ message: 'Error fetching business owners' });
+            }
+
+            return res.status(200).json({ users, businessOwners });
+        });
+    });
+});
 
 //User registration
 server.post(`/user/register`, (req, res) => {
@@ -143,7 +171,7 @@ server.post('/user/login', (req, res) => {
                     const token = generateToken(USER_ID, ROLE)
                     res.cookie('authToken', token, {
                         httpOnly: true,
-                        sameSite: 'none',
+                        sameSite: 'lax',
                         secure:false,
                         expiresIn: '24h'
                     });
@@ -156,7 +184,7 @@ server.post('/user/login', (req, res) => {
 server.post('/user/logout', (req, res) => {
     res.cookie('authToken', '', {
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: 'lax',
         secure:true,
         expiresIn: '24h'
     })
@@ -204,7 +232,7 @@ server.post('/businessowner/login', (req, res) => {
             const token = generateToken(BUSINESS_ID, ROLE);
             res.cookie('authToken', token, {
                 httpOnly: true,
-                sameSite: 'none', 
+                sameSite: 'lax', 
                 secure: false,
                 expiresIn: '24h'
              });
@@ -213,53 +241,38 @@ server.post('/businessowner/login', (req, res) => {
     });
 });
 
-// Admin: Manage users and business owners
-server.post(`/admin/dashboard`, verifyToken, (req, res) => {
-    const USERNAME = req.body.USERNAME;
-    const PASSWORD = req.body.PASSWORD;
 
-    // Check if username and password exist in the ADMINS table
-    db.get(`SELECT * FROM ADMINS WHERE USERNAME = ?`, [USERNAME], async (err, admin) => {
+server.delete('/user/delete/:id', verifyToken, (req, res) => {
+    const ROLE = req.user?.ROLE;  // Use the role from the token
+    if (ROLE !== 'admin') {
+        return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    const { id } = req.params; // Extract the user ID from the URL
+    db.run(`DELETE FROM USERS WHERE USER_ID = ?`, [id], (err) => {
         if (err) {
-            console.error('Database error fetching admin:', err);
-            return res.status(500).json({ message: 'Database error fetching admin' });
+            console.error('Error deleting user:', err);
+            return res.status(500).json({ message: 'Error deleting user' });
         }
-        if (!admin) {
-            return res.status(404).json({ message: 'Admin not found' });
-        }
-
-        // Compare password
-        const isMatch = await bcrypt.compare(PASSWORD, admin.PASSWORD);
-        if (!isMatch) {
-            return res.status(403).json({ message: 'Invalid credentials' });
-        }
-
-        // Check if the user is an admin
-        if (admin.ROLE !== 'admin') {
-            return res.status(403).json({ message: 'You are not authorized to access this resource' });
-        }
-
-        // Fetch all users and business owners from the database
-        db.all(`SELECT * FROM USERS`, (err, users) => {
-            if (err) {
-                console.error('Database error fetching users:', err);
-                return res.status(500).json({ message: 'Database error fetching users' });
-            }
-            db.all(`SELECT * FROM BUSINESS_OWNERS`, (err, businessOwners) => {
-                if (err) {
-                    console.error('Database error fetching business owners:', err);
-                    return res.status(500).json({ message: 'Database error fetching business owners' });
-                }
-                const allData = {
-                    users,
-                    businessOwners,
-                };
-                return res.status(200).json(allData);
-            });
-        });
+        return res.status(200).json({ message: 'User deleted successfully' });
     });
 });
-    
+server.delete('/businessowner/delete/:id', verifyToken, (req, res) => {
+    const ROLE = req.user?.ROLE;  // Use the role from the token
+    if (ROLE !== 'admin') {
+        return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    const { id } = req.params; // Extract the business owner ID from the URL
+    db.run(`DELETE FROM BUSINESS_OWNERS WHERE BUSINESS_ID = ?`, [id], (err) => {
+        if (err) {
+            console.error('Error deleting business owner:', err);
+            return res.status(500).json({ message: 'Error deleting business owner' });
+        }
+        return res.status(200).json({ message: 'Business owner deleted successfully' });
+    });
+});
+
 
 // Business owner: Manage products
 server.post('/business/products', verifyToken, (req, res) => {
@@ -294,6 +307,94 @@ server.post('/business/products', verifyToken, (req, res) => {
             return res.status(200).send('Product added successfully');
         });
 });
+
+server.get('/products/search', (req, res) => {
+    const { BRAND_NAME, GENDER, SIZE, PRICE } = req.query;
+
+    let query = 'SELECT * FROM PRODUCTS WHERE 1=1';
+    const params = [];
+
+    if (BRAND_NAME) {
+        query += ' AND BRAND_NAME LIKE ?';
+        params.push(`%${BRAND_NAME}%`);
+    }
+    if (GENDER) {
+        query += ' AND GENDER = ?';
+        params.push(GENDER);
+    }
+    if (SIZE) {
+        query += ' AND SIZE = ?';
+        params.push(SIZE);
+    }
+    if (PRICE) {
+        query += ' AND PRICE <= ?';
+        params.push(PRICE);
+    }
+
+    if (params.length === 0) {
+        query = 'SELECT * FROM PRODUCTS'; // Return all products if no filters
+    }
+
+    console.log('Generated SQL Query:', query);
+    console.log('Query Parameters:', params);
+
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).json({ message: 'Error searching products' });
+        }
+        console.log('Rows Returned:', rows);
+        return res.status(200).json(rows);
+    });
+});
+
+// Business Owner Dashboard API
+server.get('/businessowner/dashboard', verifyToken, (req, res) => {
+    console.log('Authorization Header:', req.headers.authorization);
+    const { ROLE, id: BUSINESS_ID } = req.user;
+  
+    if (ROLE !== 'businessowner') {
+      return res.status(403).json({ message: 'Unauthorized: Access is denied.' });
+    }
+  
+    const queryBrand = 'SELECT * FROM BUSINESS_OWNERS WHERE BUSINESS_ID = ?';
+    const queryProducts = 'SELECT * FROM PRODUCTS WHERE BUSINESS_ID = ?';
+    const queryOrders = `
+          SELECT O.ORDER_ID, O.QUANTITY, P.PRODUCT_NAME, U.FIRST_NAME, U.LAST_NAME 
+          FROM ORDERS O
+          JOIN PRODUCTS P ON O.PRODUCT_ID = P.PRODUCT_ID
+          JOIN USERS U ON O.USER_ID = U.USER_ID
+          WHERE P.BUSINESS_ID = ?
+      `;
+  
+    db.get(queryBrand, [BUSINESS_ID], (err, brand) => {
+      if (err) {
+        console.error('Error fetching brand:', err);
+        return res.status(500).json({ message: 'Error fetching brand' });
+      }
+  
+      db.all(queryProducts, [BUSINESS_ID], (err, products) => {
+        if (err) {
+          console.error('Error fetching products:', err);
+          return res.status(500).json({ message: 'Error fetching products' });
+        }
+  
+        db.all(queryOrders, [BUSINESS_ID], (err, orders) => {
+          if (err) {
+            console.error('Error fetching orders:', err);
+            return res.status(500).json({ message: 'Error fetching orders' });
+          }
+  
+          return res.status(200).json({
+            brand,
+            products,
+            orders,
+          });
+        });
+      });
+    });
+  });
+
 // Customer: Add to Cart
 server.post('/cart', verifyToken, (req, res) => {
     const ROLE = req.body.role

@@ -1,0 +1,162 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Georgia', serif;
+  }
+  
+  body {
+    background-color: #F8F1E5;
+    color: #4B2C20;
+  }
+  
+  .home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .navbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #FFCF9D;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #4B2C20;
+    margin-right: 50px; /* Added margin to separate the logo from the links */
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  
+  .nav-links li a {
+    text-decoration: none;
+    font-size: 1rem;
+    color: #4B2C20;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-links li a:hover {
+    background-color: #FFF8ED;
+  }
+  
+  .hero-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 40px;
+    background-image: url('../styles/image.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+  }
+  
+  .hero-text {
+    flex: 1;
+    margin-right: 20px;
+  }
+  
+  .hero-text h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .hero-text p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  
+  .hero-buttons {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .hero-button {
+    background-color: #4B2C20;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .hero-button:hover {
+    background-color: #3B2C20;
+  }
+  
+  .hero-image {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .hero-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+/* Navbar Search Bar Design */
+.search-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+  
+  .search-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    padding: 5px 15px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-container input {
+    border: none;
+    outline: none;
+    padding: 8px;
+    border-radius: 20px;
+    font-size: 14px;
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .search-container button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #4b2c20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .search-container button:hover {
+    color: #3b2c20;
+  }

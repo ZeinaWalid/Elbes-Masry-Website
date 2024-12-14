@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importing useNavigate
 import axios from 'axios';
 import '../styles/Register.css';
 
@@ -13,6 +14,9 @@ const RegisterPage = () => {
   const [lastName, setLastName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // Added toggle state for password visibility
+
+  const navigate = useNavigate(); // Initializing navigate function
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -63,7 +67,7 @@ const RegisterPage = () => {
           <form className="register-form" onSubmit={handleRegister}>
             <h2 className="form-title">{selectedRole} Registration</h2>
 
-            {selectedRole === 'Business Owner' && (
+            {selectedRole === 'BusinessOwner' && (
               <>
                 <div className="form-group">
                   <input type="text" className="input-field" placeholder="Business Name" value={businessName} onChange={(e) => setBusinessName(e.target.value)} required />
@@ -94,11 +98,33 @@ const RegisterPage = () => {
             </div>
 
             <div className="form-group">
-              <input type="password" className="input-field" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <div className="password-wrapper">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  className="input-field"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="toggle-password-icon"
+                >
+                  {showPassword ? '👁️' : '🔒'}
+                </span>
+              </div>
             </div>
 
             {errorMessage && <p className="error-message">{errorMessage}</p>}
-            {successMessage && <p className="success-message">{successMessage}</p>}
+            {successMessage && (
+              <p className="success-message">
+                {successMessage}{' '}
+                <span className="login-link" onClick={() => navigate('/login')}>
+                  Now you can log in.
+                </span>
+              </p>
+            )}
 
             <button type="submit" className="register-button">Register</button>
           </form>
