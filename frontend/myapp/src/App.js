@@ -1,10 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home'; // Import the Home component
-import LoginPage from './pages/Login'; // Import the Login component
-import RegisterPage from './pages/Register'; // Import the Register component
-import Dashboard from './pages/Dashboard'; // Import the Admin Dashboard component
-import BusinessOwner from './pages/BusinessOwner'; // Import the BusinessOwner component
+import Home from './pages/Home';
+import LoginPage from './pages/Login';
+import RegisterPage from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import BusinessOwner from './pages/BusinessOwner';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import Orders from './pages/Orders';
 
 function App() {
   return (
@@ -15,6 +18,9 @@ function App() {
         <Route path="/register" element={<RegisterPage />} /> {/* Register Page */}
         <Route path="/dashboard" element={<Dashboard />} /> {/* Admin Dashboard */}
         <Route path="/businessowner/dashboard" element={<BusinessOwner />} /> {/* Business Owner Dashboard */}
+        <Route path="/cart" element={<Cart />} /> {/* Cart Page */}
+        <Route path="/checkout" element={<Checkout />} /> {/* Checkout Page */}
+        <Route path="/orders" element={<Orders />} /> {/* Order Page */}
       </Routes>
     </Router>
   );

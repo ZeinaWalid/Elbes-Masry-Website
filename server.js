@@ -16,7 +16,6 @@ server.use(cors({
 }));
 
 
-
 server.use(express.json());
 server.use(cookieParser());
 
@@ -41,7 +40,8 @@ const verifyToken = (req, res, next) => {
 
 
 
-// The Routes created
+
+// The Routes and APIs created
 
 // Admin register
 server.post(`/admin/register`, (req, res) => {
@@ -96,24 +96,45 @@ db.get(`SELECT * FROM Admins WHERE USERNAME=?  `, [USERNAME], (err, user) => {
         });
 }   )}  
 )
-
+// Admin dashboard
 server.get('/admin/dashboard', verifyToken, (req, res) => {
     const queryUsers = 'SELECT * FROM USERS';
     const queryBusinessOwners = 'SELECT * FROM BUSINESS_OWNERS';
     db.all(queryUsers, (err, users) => {
         if (err) {
             console.error('Error fetching users:', err);
-            return res.status(500).json({ message: 'Error fetching users' });
+            return res.status(500).json({ message: 'Error retreving users' });
         }
 
         db.all(queryBusinessOwners, (err, businessOwners) => {
             if (err) {
                 console.error('Error fetching business owners:', err);
-                return res.status(500).json({ message: 'Error fetching business owners' });
+                return res.status(500).json({ message: 'Error retreving business owners' });
             }
-
             return res.status(200).json({ users, businessOwners });
         });
+    });
+});
+
+//To delete users and business owners
+server.delete('/user/delete/:id', verifyToken, (req, res) => {
+    const { id } = req.params; // Extract the user ID from the URL
+    db.run(`DELETE FROM USERS WHERE USER_ID = ?`, [id], (err) => {
+        if (err) {
+            console.error('Error deleting user:', err);
+            return res.status(500).json({ message: 'Error deleting user' });
+        }
+        return res.status(200).json({ message: 'User deleted successfully' });
+    });
+});
+server.delete('/businessowner/delete/:id', verifyToken, (req, res) => {
+    const { id } = req.params; // Extract the business owner ID from the URL
+    db.run(`DELETE FROM BUSINESS_OWNERS WHERE BUSINESS_ID = ?`, [id], (err) => {
+        if (err) {
+            console.error('Error deleting business owner:', err);
+            return res.status(500).json({ message: 'Error deleting business owner' });
+        }
+        return res.status(200).json({ message: 'Business owner deleted successfully' });
     });
 });
 
@@ -158,9 +179,10 @@ server.post('/user/login', (req, res) => {
                     return res.status(401).send('invalid credentials')
                 }
                 else {
-                    let USER_ID = user.id
-                    let ROLE = user.role
-                    const token = generateToken(USER_ID, ROLE)
+                    const USER_ID = user.USER_ID;
+                    const ROLE = user.ROLE; 
+        
+                    const token = generateToken(USER_ID, ROLE);
                     res.cookie('authToken', token, {
                         httpOnly: true,
                         sameSite: 'lax',
@@ -173,6 +195,7 @@ server.post('/user/login', (req, res) => {
     }   )}  
 )
 
+//To Logout
 server.post('/user/logout', (req, res) => {
     res.cookie('authToken', '', {
         httpOnly: true,
@@ -233,47 +256,10 @@ server.post('/businessowner/login', (req, res) => {
     });
 });
 
-
-server.delete('/user/delete/:id', verifyToken, (req, res) => {
-    const ROLE = req.user?.ROLE;  // Use the role from the token
-    if (ROLE !== 'admin') {
-        return res.status(403).json({ message: 'Unauthorized' });
-    }
-
-    const { id } = req.params; // Extract the user ID from the URL
-    db.run(`DELETE FROM USERS WHERE USER_ID = ?`, [id], (err) => {
-        if (err) {
-            console.error('Error deleting user:', err);
-            return res.status(500).json({ message: 'Error deleting user' });
-        }
-        return res.status(200).json({ message: 'User deleted successfully' });
-    });
-});
-server.delete('/businessowner/delete/:id', verifyToken, (req, res) => {
-    const ROLE = req.user?.ROLE;  // Use the role from the token
-    if (ROLE !== 'admin') {
-        return res.status(403).json({ message: 'Unauthorized' });
-    }
-
-    const { id } = req.params; // Extract the business owner ID from the URL
-    db.run(`DELETE FROM BUSINESS_OWNERS WHERE BUSINESS_ID = ?`, [id], (err) => {
-        if (err) {
-            console.error('Error deleting business owner:', err);
-            return res.status(500).json({ message: 'Error deleting business owner' });
-        }
-        return res.status(200).json({ message: 'Business owner deleted successfully' });
-    });
-});
-
-
-// Business owner: Manage products
+// To Manage products
 server.post('/business/products', verifyToken, (req, res) => {
-    const ROLE = req.body.ROLE;
     console.log('before check business role');
     console.log(' role=' + req.body.ROLE);
-    //console.log(' role=' + req.user.role);
-    if (ROLE !== 'businessowner') return res.status(403).send('Access denied');
-    console.log('after check business role');
     const PRODUCT_NAME = req.body.PRODUCT_NAME;
     const DESCRIPTION = req.body.DESCRIPTION;
     const PRICE = req.body.PRICE;
@@ -289,8 +275,8 @@ server.post('/business/products', verifyToken, (req, res) => {
     console.log('before insert business GENDER' + GENDER);
     console.log('before insert business BUSINESS_ID' + BUSINESS_ID);
     console.log('before insert PRODUCTS');
-    db.run(`INSERT INTO PRODUCTS (PRODUCT_NAME, DESCRIPTION, PRICE, SIZE, STOCK, GENDER, BUSINESS_ID) VALUES (? ,? , ?, ?, ?, ?,?)`, 
-        [PRODUCT_NAME, DESCRIPTION, PRICE,SIZE,STOCK,GENDER,BUSINESS_ID], (err) => {
+    db.run(`INSERT INTO PRODUCTS (PRODUCT_NAME, DESCRIPTION, PRICE, SIZE, STOCK, GENDER, BUSINESS_ID) VALUES ( ? ,? , ?, ?, ?, ?,?)`, 
+        [PRODUCT_NAME, DESCRIPTION, PRICE,SIZE,STOCK,GENDER, BUSINESS_ID], (err) => {
             if (err) {
                 console.log("err=" + err);
                 return res.status(401).send('Error adding product');
@@ -377,41 +363,129 @@ server.get('/businessowner/dashboard', verifyToken, (req, res) => {
 
 // Customer: Add to Cart
 server.post('/cart', verifyToken, (req, res) => {
-    const ROLE = req.body.role
-    if (req.body.role !== 'CUSTOMER') return res.status(403).send('Access denied.');
-    const CART_ID =req.body.CART_ID
-    const USER_ID =req.body.USER_ID
-    const PRODUCT_ID =req.body.PRODUCT_ID
-    const QUANTITY = req.body.QUANTITY
-    db.run(`INSERT INTO CART (CART_ID, USER_ID,PRODUCT_ID , QUANTITY) VALUES ( ?, ?, ?, ?)`, 
-        [CART_ID,req.user.USER_ID,PRODUCT_ID,QUANTITY, ], (err) => {
-        if (err) {
-            return res.status(400).send('Error adding to cart ' );
+    const { PRODUCT_ID, QUANTITY } = req.body;
+    console.log('before insert business PRODUCT_ID=' + PRODUCT_ID);
+    console.log('before insert business QUANTITY' + QUANTITY);
+    const USER_ID = req.user.id;
+    console.log('before insert business USER_ID' + USER_ID);
+    db.run(
+        `INSERT INTO CART (USER_ID, PRODUCT_ID, QUANTITY) VALUES (?, ?, ?)`,
+        [USER_ID, PRODUCT_ID, QUANTITY],
+        (err) => {
+            if (err) {
+                console.error('Error adding to cart:', err);
+                return res.status(400).send('Error adding to cart.');
+            }
+            res.status(200).send('Product added to cart successfully.');
         }
-        res.send('Product added to cart successfully.');
+    );
+});
+
+// API to retrieve cart items for a user
+server.get('/show/cart', verifyToken, (req, res) => {
+    const USER_ID = req.user.id; // Get user ID from the verified token
+
+    const query = `
+        SELECT 
+            CART.CART_ID,
+            PRODUCTS.PRODUCT_NAME,
+            PRODUCTS.DESCRIPTION,
+            PRODUCTS.PRICE,
+            CART.QUANTITY
+        FROM CART
+        INNER JOIN PRODUCTS ON CART.PRODUCT_ID = PRODUCTS.PRODUCT_ID
+        WHERE CART.USER_ID = ?
+    `;
+
+    db.all(query, [USER_ID], (err, rows) => {
+        if (err) {
+            console.error('Error fetching cart items:', err);
+            return res.status(500).send('Error fetching cart items.');
+        }
+
+        return res.status(200).json(rows);
     });
 });
 
-// Customer: Checkout
-server.post('/checkout', verifyToken, (req, res) => {
-    if (req.user.role !== 'CUSTOMER') return res.status(403).send('Access denied.');
-    db.all( `SELECT * FROM CART WHERE USER_ID = ?`, [req.user.id], (err, cartItems) => {
+
+// API to remove an item from the cart
+server.delete('/cart/:cartId', verifyToken, (req, res) => {
+    const CART_ID = req.params.cartId; 
+    const USER_ID = req.user.id; 
+    console.log('before insert  PRODUCT_ID=' + CART_ID);
+    console.log('before insert QUANTITY' + USER_ID);
+    const query = `
+        DELETE FROM CART
+        WHERE CART_ID = ? AND USER_ID = ?
+    `;
+
+    db.run(query, [CART_ID, USER_ID], (err) => {
         if (err) {
-            return res.status(400).send('Error fetching cart items: ');
+            console.error('Error removing item from cart:', err);
+            return res.status(500).send('Error removing item from cart.');
         }
-        const insertOrder = `INSERT INTO ORDERS (USER_ID, PRODUCT_ID, QUANTITY) VALUES (?, ?, ?)`;
-        const deleteCart = `DELETE FROM CART WHERE USER_ID = ?`;
-        db.serialize(() => {
-            cartItems.forEach(item => {
-                db.run(insertOrder, [item.USER_ID, item.PRODUCT_ID, item.QUANTITY]);
-            });
-            db.run(deleteCart, [req.user.id], (err) => {
+
+        return res.status(200).send('Item removed from cart successfully.');
+    });
+});
+
+
+server.post('/checkout', verifyToken, (req, res) => {
+    const USER_ID = req.user.id;
+
+    const insertQuery = `
+        INSERT INTO ORDERS (USER_ID, PRODUCT_ID, QUANTITY)
+        SELECT USER_ID, PRODUCT_ID, QUANTITY
+        FROM CART
+        WHERE USER_ID = ?
+    `;
+
+    const deleteCartQuery = `
+        DELETE FROM CART
+        WHERE USER_ID = ?
+    `;
+
+    db.serialize(() => {
+        db.run(insertQuery, [USER_ID], (err) => {
+            if (err) {
+                console.error('Error saving orders:', err);
+                return res.status(500).send('Error saving orders.');
+            }
+
+            db.run(deleteCartQuery, [USER_ID], (err) => {
                 if (err) {
-                    return res.status(400).send('Error during checkout: ' + err.message);
+                    console.error('Error clearing cart:', err);
+                    return res.status(500).send('Error clearing cart.');
                 }
-                res.send('Checkout successful.');
+
+                return res.status(200).send('Checkout successful. Orders saved.');
             });
         });
+    });
+});
+
+server.get('/orders', verifyToken, (req, res) => {
+    const USER_ID = req.user.id;
+
+    const query = `
+        SELECT 
+            ORDERS.ID,
+            PRODUCTS.PRODUCT_NAME,
+            PRODUCTS.DESCRIPTION,
+            PRODUCTS.PRICE,
+            ORDERS.QUANTITY
+        FROM ORDERS
+        INNER JOIN PRODUCTS ON ORDERS.PRODUCT_ID = PRODUCTS.PRODUCT_ID
+        WHERE ORDERS.USER_ID = ?
+    `;
+
+    db.all(query, [USER_ID], (err, rows) => {
+        if (err) {
+            console.error('Error fetching orders:', err);
+            return res.status(500).send('Error fetching orders.');
+        }
+
+        return res.status(200).json(rows);
     });
 });
 

@@ -48,9 +48,12 @@ const LoginPage = () => {
         navigate('/dashboard');
       } else if (selectedRole === 'BusinessOwner') {
         navigate('/businessowner/dashboard');
+      } else if (selectedRole === 'User') {
+        navigate('/cart'); // Redirect to Cart page
       } else {
         navigate('/'); // Redirect to homepage or user-specific page
       }
+      
     } catch (error) {
       setErrorMessage('Invalid credentials, please try again.');
       setSuccessMessage('');
