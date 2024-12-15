@@ -242,8 +242,8 @@ server.post('/businessowner/login', (req, res) => {
         bcrypt.compare(PASSWORD, owner.PASSWORD, (err, isMatch) => {
             if (err) return res.status(500).send('Error comparing password');
             if (!isMatch) return res.status(401).send('Invalid credentials');
-            let BUSINESS_ID = owner.id
-            let ROLE = owner.role
+            let BUSINESS_ID = owner.BUSINESS_ID
+            let ROLE = owner.ROLE
             const token = generateToken(BUSINESS_ID, ROLE);
             res.cookie('authToken', token, {
                 httpOnly: true,
@@ -333,12 +333,13 @@ server.get('/businessowner/dashboard', verifyToken, (req, res) => {
     const { ROLE, id: BUSINESS_ID } = req.user;
     console.log("role=" + ROLE);
     console.log("before db query");
-    const queryProducts = 'SELECT * FROM PRODUCTS';
+    const queryProducts = 'SELECT * FROM PRODUCTS  WHERE BUSINESS_ID = ?';
     const queryOrders = `
           SELECT O.ID, O.QUANTITY, P.PRODUCT_NAME, U.FIRST_NAME, U.LAST_NAME 
           FROM ORDERS O
           JOIN PRODUCTS P ON O.PRODUCT_ID = P.PRODUCT_ID
           JOIN USERS U ON O.USER_ID = U.USER_ID
+          WHERE P.BUSINESS_ID = ?
       `;
       console.log("businesid=" + BUSINESS_ID)
       db.all(queryProducts, [BUSINESS_ID], (err, products) => {

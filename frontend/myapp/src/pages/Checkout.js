@@ -24,7 +24,7 @@ const Checkout = () => {
 
   const handleRemoveItem = async (cartId) => {
     try {
-      const response = await axios.delete(`http://localhost:2000/cart/:cartId/`, {
+      const response = await axios.delete(`http://localhost:2000/cart/${cartId}`, {
         withCredentials: true,
       });
       setSuccessMessage(response.data);
@@ -34,6 +34,20 @@ const Checkout = () => {
       setCartItems((prevItems) => prevItems.filter((item) => item.CART_ID !== cartId));
     } catch (error) {
       setErrorMessage('Failed to remove item from cart.');
+      setSuccessMessage('');
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
+      const response = await axios.post('http://localhost:2000/checkout', {}, {
+        withCredentials: true,
+      });
+      setSuccessMessage('Order placed successfully!'); // Display success message
+      setErrorMessage('');
+      setCartItems([]); // Clear the cart
+    } catch (error) {
+      setErrorMessage('Failed to place order. Please try again.');
       setSuccessMessage('');
     }
   };
@@ -74,6 +88,12 @@ const Checkout = () => {
             <p>No items in your cart.</p>
           )}
         </div>
+        {/* Order Button */}
+        {cartItems.length > 0 && (
+          <button className="remove-item-button" onClick={handlePlaceOrder}>
+            Place Order
+          </button>
+        )}
       </main>
     </div>
   );

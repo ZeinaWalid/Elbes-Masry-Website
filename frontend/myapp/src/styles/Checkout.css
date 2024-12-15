@@ -118,3 +118,6 @@
     background-color: #d43f3f;
   }
   
+  .remove-item-button:hover {
+    background-color: #d9534f;
+  }
